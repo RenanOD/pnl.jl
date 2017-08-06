@@ -1,14 +1,14 @@
-export newnewton, quasinewton
+export pnl_newton, pnl_quasinewton
 
-function newnewton(f::Function, x::Array, tol::Float64)
+function pnl_newton(f::Function, x::Array, tol::Float64)
     Df = ForwardDiff.gradient(f, x)
     fx = f(x)
     j = 1
     while dot(Df, Df) > tol
         Hf = ForwardDiff.hessian(f, x)
-        if !isposdef(Hf)
-            return "fail"
-        end
+        #if !isposdef(Hf)
+        #    return "fail"
+        #end
         d = -Hf\Df
         lambda = 1.0
         fxnew = f(x + lambda*d)
@@ -27,10 +27,10 @@ function newnewton(f::Function, x::Array, tol::Float64)
     return x
 end
 
-function quasinewton(f::Function, x::Array, tol::Float64)
+function pnl_quasinewton(f::Function, x::Array, tol::Float64)
     Df = ForwardDiff.gradient(f, x)
     fx = f(x)
-    H = eye(length(x))
+    H = speye(length(x))
     j = 1
     while dot(Df, Df) > tol
         d = -H*Df
